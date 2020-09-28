@@ -1,5 +1,5 @@
-# CG
-Computer Graphics
+
+#Computer Graphics
 
 ## Лабораторная работа №1
 Работы с элементом canvas, обработчиками событий и таймером.
