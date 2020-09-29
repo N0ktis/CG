@@ -8,11 +8,11 @@
 	
 	function Line(ctx,x0,y0,x1,y1)
 	{
-		var deltaX = Math.abs(x1 - x0);
-		var deltaY = Math.abs(y1 - y0);
-		var signX;
-		var signY;
-		var error = deltaX - deltaY;
+		let dX = Math.abs(x1 - x0);
+		let dY = Math.abs(y1 - y0);
+		let signX;
+		let signY;
+		let error = dX - dY;
 		if(x0 < x1)
 			signX = 1;
 		else
@@ -24,33 +24,33 @@
 		while(x0 != x1 || y0 != y1) 
 		{
 			ctx.fillRect(x0,y0,1,1);
-			var error2 = error * 2;
+			let error2 = error * 2;
 			if(error2 > -deltaY) 
 			{
-				error -= deltaY;
+				error -= dY;
 				x0 += signX;
 			}
-			if(error2 < deltaX) 
+			if(error2 < dX) 
 			{
-				error += deltaX;
+				error += dX;
 				y0 += signY;
 			}
 		}
 	}
-	let point_index=0;
+	let flag=0;
 	canvas.addEventListener('click',function(e)
 	{
 		if(point_index == 0){
 			x0=e.offsetX;
 			y0=e.offsetY;
-			point_index = 1;
+			flag = 1;
 		} 
 		else 
 		{
 			x1=e.offsetX;
 			y1=e.offsetY;
 			Line(ctx,x0,y0,x1,y1);
-			point_index = 0;
+			flag = 0;
 		}
 	});
 </script>
