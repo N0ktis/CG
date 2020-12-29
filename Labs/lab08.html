@@ -1,0 +1,83 @@
+<html>
+<body>
+<p><input type="file"></p>
+<canvas id="lab08"></canvas>
+<script>
+    let canvas = document.getElementById("lab08")
+    let ctx = canvas.getContext('2d')
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    ctx.strokeRect(0, 0, canvas.width, canvas.height)
+    let vertex = []
+    let surfs = []
+    let delta_x = canvas.width / 2
+    let delta_y = canvas.height / 2
+    let obj_scale = 1
+
+    function getLine(x0, y0, x1, y1) {
+        let delta = 2 * (y1 - y0);
+        let eps = 0;
+        let y = y0;
+        let scale = 1;
+        for (let x = x0; x < x1; x++) {
+            if (eps >= (x1 - x0)) {
+                y += 1;
+                eps -= 2 * (x1 - x0);
+            }
+            eps += delta;
+            ctx.fillRect(x * scale, y * scale, scale, scale);
+        }
+    }
+
+    function getFigure() {
+        ctx.fillStyle = "black"
+        surfs.forEach(surf => {
+            let size = surf.length
+            for (let i = 0; i < size; i++) {
+                let start_line = vertex[surf[i] - 1]
+                let end_line = 0;
+                if (i === size - 1)
+                    end_line = vertex[surf[0] - 1]
+                else
+                    end_line = vertex[surf[i + 1] - 1]
+                if (start_line === undefined || end_line === undefined) {
+                    continue
+                }
+                let x0 = obj_scale * start_line[0] + delta_x
+                let y0 = delta_y - obj_scale * start_line[1]
+                let x1 = obj_scale * end_line[0] + delta_x
+                let y1 = delta_y - obj_scale * end_line[1]
+
+                getLine(x0, y0, x1, y1);
+            }
+        })
+    }
+
+
+    let input = document.querySelector('input[type="file"]')
+    input.addEventListener('change', function () {
+        let reader = new FileReader()
+        reader.onload = function () {
+            let line = reader.result.split('\n')
+            for (let i = 0; i < line.length; i++) {
+                let params = line[i].split(/\s+/);
+                if (params[0] === "v") {
+                    vertex.push([parseFloat(params[1]), parseFloat(params[2]), parseFloat(params[3])])
+                }
+                if (params[0] === "f") {
+                    let list = []
+                    for (let j = 1; j < params.length; j++) {
+                        list.push(parseInt(params[j]))
+                    }
+                    surfs.push(list)
+                }
+            }
+            getFigure()
+            surfs = []
+            vertex = []
+        }
+        reader.readAsText(input.files[0])
+    }, false)
+</script>
+</body>
+</html>
